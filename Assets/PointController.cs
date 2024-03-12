@@ -23,16 +23,19 @@ public class PointController : MonoBehaviour
         {
             for(int col = 0; col < numberOfPoints; col++)
             {
-
+                DrawLine(new Vector3(row, col, 0), new Vector3(row + 1, col - 1, 0));
             }
         }
     }
 
     void DrawLine(Vector3 point1, Vector3 point2)
     {
-        LineRenderer lineRenderer = gameObject.AddComponent<LineRenderer>();
-        lineRenderer.positionCount = 2; // Set the number of points in the line
+        GameObject lineHolder = new GameObject();
+        lineHolder.transform.parent = transform; 
 
+        LineRenderer lineRenderer = lineHolder.AddComponent<LineRenderer>();
+        lineRenderer.positionCount = 2; // Set the number of points in the line
+        lineRenderer.SetWidth(0.05f, 0.05f);
         // Set the start and end points of the line
         lineRenderer.SetPosition(0, point1); // Start point
         lineRenderer.SetPosition(1, point2); // End point

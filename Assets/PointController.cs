@@ -12,18 +12,19 @@ using System.Threading;
 public class PointController : MonoBehaviour
 {
     public int numberOfPoints;
-    public int res;
+    public float res;
     public GameObject pointTemplate;
     public bool RenderLines = false;
     public bool RunSimulation = false;
     public List<GameObject> linesCreated = new List<GameObject>();
     public List<GameObject> pointsCreated = new List<GameObject>();
     int[,] points;
-    public float simulationTime = 1000f;
+    public float simulationTime;
     public float timer;
     public float xInc = 0;
     public float yInc = 0;
     public float zInc = 0;
+    private float zoff = 0;
     public float INC_VALUE;
 
     // Start is called before the first frame update
@@ -37,47 +38,43 @@ public class PointController : MonoBehaviour
     void InitializePoints()
     {
         points = new int[numberOfPoints, numberOfPoints];
-        float xRes = 0;
         for(int x = 0; x < numberOfPoints; x++)
         {
-            float yRes = 0;
             for(int y = 0; y < numberOfPoints; y++)
             {
-                GameObject obj = Instantiate(pointTemplate, new Vector3(x, y, 0), Quaternion.identity);
-                yRes += res;
+                GameObject obj = Instantiate(pointTemplate, new Vector3(x*res, y*res, 0), Quaternion.identity);
             }
-            xRes += res;
         }
     }
 
     void MarchTheSquares()
     {
-        xInc = 0;
+        float xoff = 0;
         for (int x = 0; x < numberOfPoints; x++)
         {
-            xInc += INC_VALUE;
-            yInc = 0;
+            xoff += xInc;
+            float yoff = 0;
             for (int y = 0; y < numberOfPoints; y++)
             {
                 //float sX = (float)(x + xInc) / long.MaxValue;
                 //float sY = (float)(y + yInc) / long.MaxValue;
 
-                float val = noise.snoise(new float3(xInc, yInc, zInc));
-                points[x, y] = val > 0.5 ? 1 : 0;
-                yInc += INC_VALUE;
+                float val = noise.snoise(new float3(xoff, yoff, zoff));
+                points[x, y] = val*Mathf.Cos(Time.deltaTime) > 0.2f*Mathf.Sin(Time.deltaTime) ? 1 : 0;
+                yoff += yInc;
             }
         }
-        zInc += INC_VALUE;
+        zoff += zInc;
 
         for (int x = 0; x < numberOfPoints - 1; x++)
         {
             for (int y = 0; y < numberOfPoints - 1; y++)
             {
                 float half = res / 2.0f;
-                Vector3 a = new Vector3(x + half, y, 0);
-                Vector3 b = new Vector3(x + 1, y + half, 0);
-                Vector3 c = new Vector3(x + half, y + 1, 0);
-                Vector3 d = new Vector3(x, y + half, 0);
+                Vector3 a = new Vector3(x * res + half, y * res, 0);
+                Vector3 b = new Vector3(x * res + res, y * res + half, 0);
+                Vector3 c = new Vector3(x * res + half, y * res + res, 0);
+                Vector3 d = new Vector3(x * res, y * res + half, 0);
 
                 int currentCase = points[x, y] * 1 + points[x + 1, y] * 2 + points[x + 1, y + 1] * 4 + points[x, y + 1] * 8;
                 DrawCase(a, b, c, d, currentCase);
@@ -143,8 +140,11 @@ public class PointController : MonoBehaviour
 
         LineRenderer lineRenderer = lineHolder.AddComponent<LineRenderer>();
         lineRenderer.positionCount = 2; // Set the number of points in the line
-        lineRenderer.startWidth = 0.05f;
-        lineRenderer.endWidth = 0.05f;
+        lineRenderer.startWidth = res/10;
+        lineRenderer.endWidth = res/10;
+        lineRenderer.material = new Material(Shader.Find("Sprites/Default"));
+        lineRenderer.startColor = Color.white;
+        lineRenderer.endColor = Color.white;
 
         // Set the start and end points of the line
         lineRenderer.SetPosition(0, point1); // Start point
@@ -173,7 +173,7 @@ public class PointController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        timer -= Time.deltaTime;
+        //timer -= Time.deltaTime;
         if(timer <= 0)
         {
             RunSimulation = true;
@@ -192,7 +192,7 @@ public class PointController : MonoBehaviour
         {
             DestroyLines();
             MarchTheSquares();
-            RunSimulation = false;
+            //RunSimulation = false;
         }
     }
 }

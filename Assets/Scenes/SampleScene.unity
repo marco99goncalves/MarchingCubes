@@ -254,7 +254,7 @@ Camera:
   m_Enabled: 1
   serializedVersion: 2
   m_ClearFlags: 2
-  m_BackGroundColor: {r: 0.3207547, g: 0.3207547, b: 0.3207547, a: 0}
+  m_BackGroundColor: {r: 0, g: 0, b: 0, a: 0}
   m_projectionMatrixMode: 1
   m_GateFitMode: 2
   m_FOVAxisMode: 0
@@ -277,7 +277,7 @@ Camera:
     height: 1
   near clip plane: 0.3
   far clip plane: 1000
-  field of view: 88
+  field of view: 83
   orthographic: 0
   orthographic size: 5
   m_Depth: -1
@@ -303,8 +303,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 963194225}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 9, y: 10, z: -10.98}
+  m_LocalRotation: {x: -0.00018902797, y: 0.99981254, z: -0.012606953, w: -0.014695688}
+  m_LocalPosition: {x: 0.27, y: 0.24, z: 0.329}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -322,19 +322,19 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0ca2cb2bad4367f498922a545b688d3c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  numberOfPoints: 100
-  res: 1
+  numberOfPoints: 50
+  res: 0.01
   pointTemplate: {fileID: 303302428158133671, guid: 5741868e325cfc74ea87451f6df828e4, type: 3}
   RenderLines: 0
-  RunSimulation: 0
+  RunSimulation: 1
   linesCreated: []
   pointsCreated: []
-  simulationTime: 0.01
+  simulationTime: 0.001
   timer: 0
-  xInc: 0
-  yInc: 0
-  zInc: 0
-  INC_VALUE: 0.1
+  xInc: 0.1
+  yInc: 0.1
+  zInc: 0.002
+  INC_VALUE: 0.01
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0

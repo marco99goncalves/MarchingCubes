@@ -7,6 +7,7 @@ using UnityEngine.UI;
 using static UnityEngine.GraphicsBuffer;
 using static Unity.Mathematics.math;
 using Unity.Mathematics;
+using System.Threading;
 
 public class PointController : MonoBehaviour
 {
@@ -14,43 +15,59 @@ public class PointController : MonoBehaviour
     public int res;
     public GameObject pointTemplate;
     public bool RenderLines = false;
+    public bool RunSimulation = false;
     public List<GameObject> linesCreated = new List<GameObject>();
     public List<GameObject> pointsCreated = new List<GameObject>();
+    int[,] points;
+    public float simulationTime = 1000f;
+    public float timer;
+    public float xInc = 0;
+    public float yInc = 0;
+    public float zInc = 0;
+    public float INC_VALUE;
 
     // Start is called before the first frame update
     void Start()
     {
         //Random.InitState(42);
-        MarchTheSquares();
+        InitializePoints();
+        timer = simulationTime;
+    }
+
+    void InitializePoints()
+    {
+        points = new int[numberOfPoints, numberOfPoints];
+        float xRes = 0;
+        for(int x = 0; x < numberOfPoints; x++)
+        {
+            float yRes = 0;
+            for(int y = 0; y < numberOfPoints; y++)
+            {
+                GameObject obj = Instantiate(pointTemplate, new Vector3(x, y, 0), Quaternion.identity);
+                yRes += res;
+            }
+            xRes += res;
+        }
     }
 
     void MarchTheSquares()
     {
-        int[,] points = new int[numberOfPoints, numberOfPoints];
-
-        // Draw the points
-        float xInc = 0;
-        int seed = UnityEngine.Random.Range(0, 10000);
-
+        xInc = 0;
         for (int x = 0; x < numberOfPoints; x++)
         {
-            float yInc = 0;
+            xInc += INC_VALUE;
+            yInc = 0;
             for (int y = 0; y < numberOfPoints; y++)
             {
-                GameObject obj = Instantiate(pointTemplate, new Vector3(x, y, 0), Quaternion.identity);
-                points[x, y] = noise.snoise(new Vector2(x + seed, y + seed)) > 0.5f ? 1 : 0;
-                Debug.Log(points[x, y]);
-                
-                //points[row, col] = Mathf.PerlinNoise(sRow, sCol) > 0.5 ? 1 : 
-                if (points[x, y] == 0)
-                {
-                    obj.GetComponent<Renderer>().material.color = Color.black;
-                }
-                pointsCreated.Add(obj);
-                yInc += 0.1f;
+                //float sX = (float)(x + xInc) / long.MaxValue;
+                //float sY = (float)(y + yInc) / long.MaxValue;
+
+                float val = noise.snoise(new float3(xInc, yInc, zInc));
+                points[x, y] = val > 0.5 ? 1 : 0;
+                yInc += INC_VALUE;
             }
-            xInc += 0.1f;
         }
+        zInc += INC_VALUE;
 
         for (int x = 0; x < numberOfPoints - 1; x++)
         {
@@ -156,6 +173,13 @@ public class PointController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        timer -= Time.deltaTime;
+        if(timer <= 0)
+        {
+            RunSimulation = true;
+            timer = simulationTime;
+        }
+
         if(RenderLines)
         {
             DestroyPoints();
@@ -163,6 +187,12 @@ public class PointController : MonoBehaviour
             MarchTheSquares();
             RenderLines = false;
         }
-        
+
+        if (RunSimulation)
+        {
+            DestroyLines();
+            MarchTheSquares();
+            RunSimulation = false;
+        }
     }
 }

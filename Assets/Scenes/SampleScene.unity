@@ -445,13 +445,13 @@ MonoBehaviour:
   res: 1
   size: 20
   numberOfPoints: 0
-  pointTemplate: {fileID: 7429675135171053133, guid: 542525a796bafe246ae33e8c52ece435, type: 3}
+  pointTemplate: {fileID: 303302428158133671, guid: 5741868e325cfc74ea87451f6df828e4, type: 3}
   doubleSided: {fileID: 4800000, guid: dca88e50d1c745c46bef3351b5fea088, type: 3}
-  material: {fileID: 2100000, guid: 224406389172f4c41a8fee69fbf6632a, type: 2}
+  material: {fileID: 2100000, guid: a38c17faf2fa53c46a6b8e0d6040175e, type: 2}
   xInc: 0.1
   yInc: 0.1
   zInc: 0.1
-  wInc: 0.002
+  wInc: 0.02
   createdTriangles: []
   runSimulation: 0
   showPoints: 0

@@ -92,7 +92,7 @@ public class PointController : MonoBehaviour
        
         float curMatVal = _samples[count++];
         float normalized = ((curMatVal - curMin) / (curMax - curMin));
-        points[myRow][myCol] = (30 * normalized >= 0.03f ? 0 : 1);
+        points[myRow][myCol] = (30 * normalized >= 0.03f ? 1 : 0);
 
         while (count < elements)
         {
@@ -120,7 +120,7 @@ public class PointController : MonoBehaviour
                 // Place element
                 curMatVal = _samples[count++];
                 normalized = ((curMatVal - curMin) / (curMax - curMin));
-                points[myRow][myCol] = (30 * normalized >= 0.03f ? 0 : 1);
+                points[myRow][myCol] = (30 * normalized >= 0.03f ? 1 : 0);
 
                 if (count >= elements) break;
             }
@@ -251,26 +251,31 @@ public class PointController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        timer -= Time.deltaTime;
-        if (timer <= 0)
-        {
-            RunSimulation = true;
-            timer = simulationTime;
-        }
+        // timer -= Time.deltaTime;
+        // if (timer <= 0)
+        // {
+        //     RunSimulation = true;
+        //     timer = simulationTime;
+        // }
 
-        if (RenderLines)
-        {
+        // if (RenderLines)
+        // {
             DestroyPoints();
-            DestroyLines();
-            MarchTheSquares();
-            RenderLines = false;
-        }
+            // DestroyLines();
+            // MarchTheSquares();
+            // RenderLines = false;
+        // }
 
-        if (RunSimulation)
-        {
+        // if (RunSimulation)
+        // {
             DestroyLines();
             MarchTheSquares();
             //RunSimulation = false;
+        // }
+        
+        if (!_audioSource.isPlaying)
+        {
+            Application.Quit();
         }
     }
 }

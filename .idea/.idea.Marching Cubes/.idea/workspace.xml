@@ -5,7 +5,8 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="fbc552a5-221a-4770-97e9-e7f526d6c148" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/Assets/Scenes/SampleScene.unity" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scenes/SampleScene.unity" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/.idea.Marching Cubes/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.Marching Cubes/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/MarchingCubes.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/MarchingCubes.cs" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -26,11 +27,7 @@
   <component name="HighlightingSettingsPerFile">
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/6f7018b8b8c149e68c4a65a05ac289be175400/51/93eee921/Mesh.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/6f7018b8b8c149e68c4a65a05ac289be175400/a2/a4a722fb/Random.cs" root0="SKIP_HIGHLIGHTING" />
-    <setting file="file://$PROJECT_DIR$/Assets/MarchingCubes.cs" root0="FORCE_HIGHLIGHTING" />
-    <setting file="mock://C:/Users/marco/Documents/Unity Projects/Marching Cubes/Assets/Point.prefab" root0="SKIP_HIGHLIGHTING" />
     <setting file="mock://C:/Users/marco/Documents/Unity Projects/Marching Cubes/Assets/Scenes/SampleScene.unity" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock://diff.cs" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock://diff.cs" root0="SKIP_HIGHLIGHTING" />
   </component>
   <component name="MetaFilesCheckinStateConfiguration" checkMetaFiles="true" />
   <component name="ProjectColorInfo">{
@@ -120,7 +117,8 @@
       <workItem from="1710352399433" duration="145000" />
       <workItem from="1710352574116" duration="16130000" />
       <workItem from="1710373146453" duration="97000" />
-      <workItem from="1710373262684" duration="300000" />
+      <workItem from="1710373262684" duration="764000" />
+      <workItem from="1710435911291" duration="1192000" />
     </task>
     <task id="LOCAL-00001" summary="Marching cubes kind of done but super trash">
       <option name="closed" value="true" />
@@ -138,7 +136,15 @@
       <option name="project" value="LOCAL" />
       <updated>1710372364026</updated>
     </task>
-    <option name="localTasksCounter" value="3" />
+    <task id="LOCAL-00003" summary="first teste">
+      <option name="closed" value="true" />
+      <created>1710373681409</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1710373681409</updated>
+    </task>
+    <option name="localTasksCounter" value="4" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -174,7 +180,8 @@
     <option name="CLEAR_INITIAL_COMMIT_MESSAGE" value="true" />
     <MESSAGE value="Marching cubes kind of done but super trash" />
     <MESSAGE value="sd" />
-    <option name="LAST_COMMIT_MESSAGE" value="sd" />
+    <MESSAGE value="first teste" />
+    <option name="LAST_COMMIT_MESSAGE" value="first teste" />
   </component>
   <component name="XSLT-Support.FileAssociations.UIState">
     <expand />

@@ -1,11 +1,8 @@
 using System.Collections;
 using System.Collections.Generic;
-using System.Threading;
-using Palmmedia.ReportGenerator.Core;
-using Palmmedia.ReportGenerator.Core.Reporting.Builders;
+using TMPro;
 using Unity.Mathematics;
 using UnityEngine;
-using Random = UnityEngine.Random;
 
 public class MarchingCubes : MonoBehaviour
 {
@@ -21,11 +18,13 @@ public class MarchingCubes : MonoBehaviour
     private float woff;
 
     public int[,,] points;
-    
+
     public List<Vector3> vertices = new List<Vector3>();
     private List<int> triangles = new List<int>();
 
-    
+    public TextMeshProUGUI fpsCounter;
+
+
     int[,] triangulation = new int[256, 16]
     {
         { -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1 },
@@ -293,7 +292,12 @@ public class MarchingCubes : MonoBehaviour
 
     public float SimulationFPS;
     private float timePerCall;
-    
+
+    private Matrix4x4 matrix;
+
+    // Create an array of matrices for a single instance
+    private Matrix4x4[] matrices;
+
     void InitializePoints()
     {
         numberOfPoints = (int)(size / res);
@@ -323,7 +327,6 @@ public class MarchingCubes : MonoBehaviour
         //meshFilter.mesh = mesh;
         DrawSingleTriangle(mesh);
     }
-    
 
     void MarchTheCubes()
     {
@@ -339,14 +342,15 @@ public class MarchingCubes : MonoBehaviour
                 for (int z = 0; z < numberOfPoints; z++)
                 {
                     float val = noise.snoise(new float4(xoff, yoff, zoff, woff));
-                    points[x, y, z] = val*Mathf.Cos(Time.deltaTime) > 0.2f*Mathf.Sin(Time.deltaTime) ? 1 : 0;
-                    //points[x, y, z] = val > 0.5f ? 1 : 0;
+                    //points[x, y, z] = val * Mathf.Cos(Time.deltaTime) > 0.2f * Mathf.Sin(Time.deltaTime) ? 1 : 0;
+                    points[x, y, z] = val > 0.5f ? 1 : 0;
                     zoff += zInc;
                 }
             }
         }
 
         woff += wInc;
+        int[] cube = new int[8];
 
         for (int x = 0; x < numberOfPoints - 1; x++)
         {
@@ -354,7 +358,6 @@ public class MarchingCubes : MonoBehaviour
             {
                 for (int z = 0; z < numberOfPoints - 1; z++)
                 {
-                    int[] cube = new int[8];
                     cube[0] = points[x, y, z + 1];
                     cube[1] = points[x + 1, y, z + 1];
                     cube[2] = points[x + 1, y, z];
@@ -396,7 +399,7 @@ public class MarchingCubes : MonoBehaviour
                 break;
 
             vertices.Add(edgeList[triangulation[currentCase, i]]);
-            triangles.Add(vertices.Count-1);
+            triangles.Add(vertices.Count - 1);
         }
     }
 
@@ -407,20 +410,15 @@ public class MarchingCubes : MonoBehaviour
         {
             if (cube[i] == 1)
             {
-                currentCase += (int)Mathf.Pow(2, i);
+                currentCase += 1<<i;
             }
         }
 
         return currentCase;
     }
-    
+
     void DrawSingleTriangle(Mesh triangleMesh)
     {
-        Matrix4x4 matrix = Matrix4x4.TRS(Vector3.zero, Quaternion.identity, Vector3.one);
-
-        // Create an array of matrices for a single instance
-        Matrix4x4[] matrices = new Matrix4x4[1] { matrix };
-
         // Draw the mesh instance
         Graphics.DrawMeshInstanced(triangleMesh, 0, material, matrices);
     }
@@ -429,7 +427,9 @@ public class MarchingCubes : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        //Application.targetFrameRate = 10;
+        matrix = Matrix4x4.TRS(Vector3.zero, Quaternion.identity, Vector3.one);
+        matrices = new Matrix4x4[1] { matrix };
+        
         InitializePoints();
         StartCoroutine(DoEverythingEverywhereAllAtOnce());
     }
@@ -452,6 +452,7 @@ public class MarchingCubes : MonoBehaviour
             triangles.Clear();
             MarchTheCubes();
             SetMesh();
+            fpsCounter.text = (1.0f / Time.deltaTime).ToString();
             yield return new WaitForSeconds(timePerCall);
         }
 
@@ -461,6 +462,6 @@ public class MarchingCubes : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        timePerCall = (1000.0f / SimulationFPS)/1000.0f;
+        timePerCall = (1000.0f / SimulationFPS) / 1000.0f;
     }
 }

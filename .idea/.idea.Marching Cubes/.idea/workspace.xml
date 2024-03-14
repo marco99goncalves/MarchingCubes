@@ -4,10 +4,9 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="fbc552a5-221a-4770-97e9-e7f526d6c148" name="Changes" comment="">
+    <list default="true" id="fbc552a5-221a-4770-97e9-e7f526d6c148" name="Changes" comment="Its atually kind of decent now">
       <change beforePath="$PROJECT_DIR$/.idea/.idea.Marching Cubes/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.Marching Cubes/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Assets/MarchingCubes.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/MarchingCubes.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/New Material.mat" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/New Material.mat" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Assets/Scenes/Marco.unity" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scenes/Marco.unity" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -120,7 +119,7 @@
       <workItem from="1710352574116" duration="16130000" />
       <workItem from="1710373146453" duration="97000" />
       <workItem from="1710373262684" duration="764000" />
-      <workItem from="1710435911291" duration="5491000" />
+      <workItem from="1710435911291" duration="8121000" />
     </task>
     <task id="LOCAL-00001" summary="Marching cubes kind of done but super trash">
       <option name="closed" value="true" />
@@ -146,7 +145,15 @@
       <option name="project" value="LOCAL" />
       <updated>1710373681409</updated>
     </task>
-    <option name="localTasksCounter" value="4" />
+    <task id="LOCAL-00004" summary="Its atually kind of decent now">
+      <option name="closed" value="true" />
+      <created>1710441563789</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1710441563789</updated>
+    </task>
+    <option name="localTasksCounter" value="5" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -183,7 +190,8 @@
     <MESSAGE value="Marching cubes kind of done but super trash" />
     <MESSAGE value="sd" />
     <MESSAGE value="first teste" />
-    <option name="LAST_COMMIT_MESSAGE" value="first teste" />
+    <MESSAGE value="Its atually kind of decent now" />
+    <option name="LAST_COMMIT_MESSAGE" value="Its atually kind of decent now" />
   </component>
   <component name="XSLT-Support.FileAssociations.UIState">
     <expand />

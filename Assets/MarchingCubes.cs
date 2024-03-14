@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Threading;
+using Palmmedia.ReportGenerator.Core;
 using Palmmedia.ReportGenerator.Core.Reporting.Builders;
 using Unity.Mathematics;
 using UnityEngine;
@@ -20,7 +21,11 @@ public class MarchingCubes : MonoBehaviour
     private float woff;
 
     public int[,,] points;
+    
+    public List<Vector3> vertices = new List<Vector3>();
+    private List<int> triangles = new List<int>();
 
+    
     int[,] triangulation = new int[256, 16]
     {
         { -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1 },
@@ -286,6 +291,9 @@ public class MarchingCubes : MonoBehaviour
     public bool runSimulation;
     public bool showPoints;
 
+    public float SimulationFPS;
+    private float timePerCall;
+    
     void InitializePoints()
     {
         numberOfPoints = (int)(size / res);
@@ -306,6 +314,17 @@ public class MarchingCubes : MonoBehaviour
         }
     }
 
+    void SetMesh()
+    {
+        Mesh mesh = new Mesh();
+        mesh.vertices = vertices.ToArray();
+        mesh.triangles = triangles.ToArray();
+        mesh.RecalculateNormals();
+        //meshFilter.mesh = mesh;
+        DrawSingleTriangle(mesh);
+    }
+    
+
     void MarchTheCubes()
     {
         float xoff = 0;
@@ -320,7 +339,8 @@ public class MarchingCubes : MonoBehaviour
                 for (int z = 0; z < numberOfPoints; z++)
                 {
                     float val = noise.snoise(new float4(xoff, yoff, zoff, woff));
-                    points[x, y, z] = val > 0.5f ? 1 : 0;
+                    points[x, y, z] = val*Mathf.Cos(Time.deltaTime) > 0.2f*Mathf.Sin(Time.deltaTime) ? 1 : 0;
+                    //points[x, y, z] = val > 0.5f ? 1 : 0;
                     zoff += zInc;
                 }
             }
@@ -375,15 +395,8 @@ public class MarchingCubes : MonoBehaviour
             if (triangulation[currentCase, i] == -1)
                 break;
 
-            Vector3 a, b, c;
-            a = edgeList[triangulation[currentCase, i]];
-            b = edgeList[triangulation[currentCase, i + 1]];
-            c = edgeList[triangulation[currentCase, i + 2]];
-
-            i += 2;
-            //Mesh triangleMesh = CreateMesh(a, b, c);
-            //DrawSingleTriangle(a, b, c, triangleMesh);
-            //DrawTriangle(a, b, c);
+            vertices.Add(edgeList[triangulation[currentCase, i]]);
+            triangles.Add(vertices.Count-1);
         }
     }
 
@@ -400,41 +413,8 @@ public class MarchingCubes : MonoBehaviour
 
         return currentCase;
     }
-
-    void DrawTriangle(Vector3 a, Vector3 b, Vector3 c)
-    {
-        GameObject triangle = new GameObject();
-        MeshFilter meshFilter = triangle.AddComponent<MeshFilter>();
-        MeshRenderer meshRenderer = triangle.AddComponent<MeshRenderer>();
-        Mesh mesh = new Mesh();
-        mesh.vertices = new Vector3[] { a, b, c };
-        mesh.triangles = new int[] { 0, 1, 2 };
-        meshFilter.mesh = mesh;
-        meshRenderer.material = new Material(doubleSided);
-        mesh.RecalculateNormals();
-        createdTriangles.Add(triangle);
-    }
-    Mesh CreateMesh(Vector3 pointA, Vector3 pointB, Vector3 pointC)
-    {
-        Mesh mesh = new Mesh();
-
-        // Define the vertices of the triangle
-        Vector3[] vertices = new Vector3[] { pointA, pointB, pointC };
-
-        // Define the triangle's indices
-        int[] triangles = new int[]
-        {
-            0, 1, 2
-        };
-
-        // Assign vertices and triangles to the mesh
-        mesh.vertices = vertices;
-        mesh.triangles = triangles;
-
-        return mesh;
-    }
-
-    void DrawSingleTriangle(Vector3 pointA, Vector3 pointB, Vector3 pointC, Mesh triangleMesh)
+    
+    void DrawSingleTriangle(Mesh triangleMesh)
     {
         Matrix4x4 matrix = Matrix4x4.TRS(Vector3.zero, Quaternion.identity, Vector3.one);
 
@@ -451,6 +431,7 @@ public class MarchingCubes : MonoBehaviour
     {
         //Application.targetFrameRate = 10;
         InitializePoints();
+        StartCoroutine(DoEverythingEverywhereAllAtOnce());
     }
 
     void DestroyTriangles()
@@ -463,13 +444,23 @@ public class MarchingCubes : MonoBehaviour
         createdTriangles.Clear();
     }
 
+    private IEnumerator DoEverythingEverywhereAllAtOnce()
+    {
+        while (runSimulation)
+        {
+            vertices.Clear();
+            triangles.Clear();
+            MarchTheCubes();
+            SetMesh();
+            yield return new WaitForSeconds(timePerCall);
+        }
+
+        yield return new WaitForSeconds(timePerCall);
+    }
+
     // Update is called once per frame
     void Update()
     {
-        if (runSimulation)
-        {
-            DestroyTriangles();
-            MarchTheCubes();
-        }
+        timePerCall = (1000.0f / SimulationFPS)/1000.0f;
     }
 }

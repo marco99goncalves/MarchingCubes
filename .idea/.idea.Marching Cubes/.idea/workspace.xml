@@ -4,9 +4,12 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="fbc552a5-221a-4770-97e9-e7f526d6c148" name="Changes" comment="Its atually kind of decent now">
+    <list default="true" id="fbc552a5-221a-4770-97e9-e7f526d6c148" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/.idea.Marching Cubes/.idea/copilot/chatSessions/00000000000.xd" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.Marching Cubes/.idea/copilot/chatSessions/00000000000.xd" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/.idea.Marching Cubes/.idea/copilot/chatSessions/xd.lck" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.Marching Cubes/.idea/copilot/chatSessions/xd.lck" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/.idea.Marching Cubes/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.Marching Cubes/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Assets/MarchingCubes.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/MarchingCubes.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/New Material.mat" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/New Material.mat" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Assets/Scenes/Marco.unity" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scenes/Marco.unity" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -27,8 +30,10 @@
   </component>
   <component name="HighlightingSettingsPerFile">
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/6f7018b8b8c149e68c4a65a05ac289be175400/51/93eee921/Mesh.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/6f7018b8b8c149e68c4a65a05ac289be175400/6e/8328f577/Profiler.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/6f7018b8b8c149e68c4a65a05ac289be175400/a2/a4a722fb/Random.cs" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock://C:/Users/marco/Documents/Unity Projects/Marching Cubes/Assets/Scenes/SampleScene.unity" root0="SKIP_HIGHLIGHTING" />
+    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/9384495d2a482ac7341d67ca84e16d267d16c62458a9d67a92b119199a9/System.Threading.Tasks.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Library/PackageCache/com.unity.mathematics@1.2.6/Unity.Mathematics/Noise/classicnoise4D.cs" root0="SKIP_HIGHLIGHTING" />
   </component>
   <component name="MetaFilesCheckinStateConfiguration" checkMetaFiles="true" />
   <component name="ProjectColorInfo">{
@@ -63,7 +68,7 @@
 }</component>
   <component name="RunManager" selected="Attach to Unity Editor.Attach to Unity Editor &amp; Play">
     <configuration name="Standalone Player" type="RunUnityExe" factoryName="Unity Executable">
-      <option name="EXE_PATH" value="$USER_HOME$/Desktop/Marching Cubes\Marching Cubes.exe" />
+      <option name="EXE_PATH" value="$USER_HOME$/Desktop/Marching Cubes/Marching Cubes.exe" />
       <option name="PROGRAM_PARAMETERS" value="" />
       <option name="WORKING_DIRECTORY" value="C:\Users\marco\Desktop\Marching Cubes" />
       <option name="PASS_PARENT_ENVS" value="1" />
@@ -119,7 +124,8 @@
       <workItem from="1710352574116" duration="16130000" />
       <workItem from="1710373146453" duration="97000" />
       <workItem from="1710373262684" duration="764000" />
-      <workItem from="1710435911291" duration="8121000" />
+      <workItem from="1710435911291" duration="16255000" />
+      <workItem from="1710513227351" duration="5552000" />
     </task>
     <task id="LOCAL-00001" summary="Marching cubes kind of done but super trash">
       <option name="closed" value="true" />
@@ -153,7 +159,15 @@
       <option name="project" value="LOCAL" />
       <updated>1710441563789</updated>
     </task>
-    <option name="localTasksCounter" value="5" />
+    <task id="LOCAL-00005" summary="added fps counter">
+      <option name="closed" value="true" />
+      <created>1710444402070</created>
+      <option name="number" value="00005" />
+      <option name="presentableId" value="LOCAL-00005" />
+      <option name="project" value="LOCAL" />
+      <updated>1710444402070</updated>
+    </task>
+    <option name="localTasksCounter" value="6" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -191,7 +205,8 @@
     <MESSAGE value="sd" />
     <MESSAGE value="first teste" />
     <MESSAGE value="Its atually kind of decent now" />
-    <option name="LAST_COMMIT_MESSAGE" value="Its atually kind of decent now" />
+    <MESSAGE value="added fps counter" />
+    <option name="LAST_COMMIT_MESSAGE" value="added fps counter" />
   </component>
   <component name="XSLT-Support.FileAssociations.UIState">
     <expand />

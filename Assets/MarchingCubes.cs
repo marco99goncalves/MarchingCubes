@@ -16,6 +16,7 @@ public class MarchingCubes : MonoBehaviour
     public int numberOfPoints;
     public GameObject pointTemplate;
     public Material material;
+    private int[] cube;
 
     public float xInc, yInc, zInc, wInc;
     private float woff;
@@ -304,7 +305,8 @@ public class MarchingCubes : MonoBehaviour
 
 
     private MeshFilter meshFilter;
-    
+    private bool _isMeshNull;
+
     void InitializePoints()
     {
         numberOfPoints = (int)(size / res);
@@ -324,17 +326,22 @@ public class MarchingCubes : MonoBehaviour
             }
         }
     }
-
+    
     void SetMesh()
     {
-        Mesh mesh = new Mesh();
+        if(_isMeshNull) {
+            meshFilter.mesh = new Mesh();
+        }
+    
+        var mesh = meshFilter.mesh;
+        mesh.Clear();  // Clear existing mesh data
         mesh.vertices = vertices.ToArray();
         mesh.triangles = triangles.ToArray();
         mesh.RecalculateNormals();
-        meshFilter.mesh = mesh;
         //Graphics.DrawMeshInstanced(mesh, 0, material, matrices);
         //Graphics.RenderMeshInstanced(rp, mesh, 0, matrices);
     }
+
 
     void MarchTheCubes()
     {
@@ -356,7 +363,7 @@ public class MarchingCubes : MonoBehaviour
         
         woff += wInc;
         
-        int[] cube = new int[8];
+        // int[] cube = new int[8]; // moved this to be global
 
         for (int x = 0; x < numberOfPoints - 1; x++)
         {
@@ -413,7 +420,9 @@ public class MarchingCubes : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        cube = new int[8];
         meshFilter = GetComponent<MeshFilter>();
+        _isMeshNull = meshFilter.mesh == null;
         matrix = Matrix4x4.TRS(Vector3.zero, Quaternion.identity, Vector3.one);
         matrices = new Matrix4x4[1] { matrix };
         rp = new RenderParams(material);

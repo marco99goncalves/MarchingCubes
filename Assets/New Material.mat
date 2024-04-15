@@ -8,11 +8,13 @@ Material:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_Name: New Material
-  m_Shader: {fileID: 4800000, guid: dca88e50d1c745c46bef3351b5fea088, type: 3}
+  m_Shader: {fileID: 4800000, guid: 75c915996cc57db40937ab3b32aaf462, type: 3}
   m_Parent: {fileID: 0}
   m_ModifiedSerializedProperties: 0
   m_ValidKeywords: []
-  m_InvalidKeywords: []
+  m_InvalidKeywords:
+  - _ALPHAPREMULTIPLY_ON
+  - _SMOOTHNESS_TEXTURE_ALBEDO_CHANNEL_A
   m_LightmapFlags: 4
   m_EnableInstancingVariants: 1
   m_DoubleSidedGI: 0
@@ -61,23 +63,41 @@ Material:
         m_Offset: {x: 0, y: 0}
     m_Ints: []
     m_Floats:
+    - _Alpha: 1
+    - _AlphaValue: 1
+    - _Alpha_Value: 1
+    - _BUILTIN_AlphaClip: 1
+    - _BUILTIN_Blend: 0
+    - _BUILTIN_CullMode: 0
+    - _BUILTIN_DstBlend: 10
+    - _BUILTIN_QueueControl: 0
+    - _BUILTIN_QueueOffset: 0
+    - _BUILTIN_SrcBlend: 5
+    - _BUILTIN_Surface: 1
+    - _BUILTIN_ZTest: 4
+    - _BUILTIN_ZWrite: 0
+    - _BUILTIN_ZWriteControl: 0
     - _BumpScale: 1
-    - _Cutoff: 0.5
+    - _Cutoff: 0.448
     - _DetailNormalMapScale: 1
-    - _DstBlend: 0
-    - _GlossMapScale: 1
-    - _Glossiness: 0.5
+    - _DstBlend: 10
+    - _EffectStrength: 1
+    - _GlossMapScale: 0
+    - _Glossiness: 1
     - _GlossyReflections: 1
     - _Metallic: 0
-    - _Mode: 0
+    - _Mode: 3
     - _OcclusionStrength: 1
     - _Parallax: 0.02
-    - _SmoothnessTextureChannel: 0
+    - _SmoothnessTextureChannel: 1
     - _SpecularHighlights: 1
     - _SrcBlend: 1
     - _UVSec: 0
-    - _ZWrite: 1
+    - _ZWrite: 0
     m_Colors:
-    - _Color: {r: 0.4433962, g: 0.11937114, b: 0.0020914965, a: 1}
+    - _BaseColor: {r: 0.6981132, g: 0.14620863, b: 0.14620863, a: 0}
+    - _Color: {r: 1, g: 0, b: 0, a: 0.3019608}
+    - _Color_Tint: {r: 0.2603773, g: 0.06828761, b: 0.100520246, a: 0}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
+    - _Point: {r: 0, g: 0, b: 0, a: 0}
   m_BuildTextureStacks: []

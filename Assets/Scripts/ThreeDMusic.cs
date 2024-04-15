@@ -3,8 +3,11 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using TMPro;
+using Unity.Mathematics;
+using Unity.VisualScripting.FullSerializer;
 using static Unity.Mathematics.math;
 using UnityEngine;
+using Random = System.Random;
 
 [RequireComponent(typeof(AudioSource))]
 public class ThreeDMusic : MonoBehaviour
@@ -24,7 +27,7 @@ public class ThreeDMusic : MonoBehaviour
     public float xInc, yInc, zInc, wInc;
     private float woff;
 
-    public int[,,] points;
+    public int[][][] points;
 
     public List<Vector3> vertices = new List<Vector3>();
     private List<int> triangles = new List<int>();
@@ -309,25 +312,54 @@ public class ThreeDMusic : MonoBehaviour
 
     private MeshFilter meshFilter;
     private bool _isMeshNull;
+    private Vector3Int[] directions = {
+        new Vector3Int(-1, -1, -1), new Vector3Int(-1, -1, 0), new Vector3Int(-1, -1, 1),
+        new Vector3Int(-1, 0, -1), new Vector3Int(-1, 0, 0), new Vector3Int(-1, 0, 1),
+        new Vector3Int(-1, 1, -1), new Vector3Int(-1, 1, 0), new Vector3Int(-1, 1, 1),
+        new Vector3Int(0, -1, -1), new Vector3Int(0, -1, 0), new Vector3Int(0, -1, 1),
+        new Vector3Int(0, 0, -1), /* We omit (0, 0, 0) as it's not a direction */ new Vector3Int(0, 0, 1),
+        new Vector3Int(0, 1, -1), new Vector3Int(0, 1, 0), new Vector3Int(0, 1, 1),
+        new Vector3Int(1, -1, -1), new Vector3Int(1, -1, 0), new Vector3Int(1, -1, 1),
+        new Vector3Int(1, 0, -1), new Vector3Int(1, 0, 0), new Vector3Int(1, 0, 1),
+        new Vector3Int(1, 1, -1), new Vector3Int(1, 1, 0), new Vector3Int(1, 1, 1)
+    };
+
+    private bool[][][] used;
 
     void InitializePoints()
     {
         numberOfPoints = (int)(size / res);
-        points = new int[numberOfPoints, numberOfPoints, numberOfPoints];
-        createdTriangles = new List<GameObject>();
-        if (showPoints)
+        points = new int[numberOfPoints][][];
+        for (int row = 0; row < numberOfPoints; row++)
         {
-            for (int x = 0; x < numberOfPoints; x++)
+            points[row] = new int[numberOfPoints][];
+            for (int col = 0; col < numberOfPoints; col++)
             {
-                for (int y = 0; y < numberOfPoints; y++)
-                {
-                    for (int z = 0; z < numberOfPoints; z++)
-                    {
-                        //Instantiate(pointTemplate, new Vector3(x * res, y * res, z * res), Quaternion.identity);
-                    }
-                }
+                points[row][col] = new int[numberOfPoints];
             }
         }
+
+        used = new bool[numberOfPoints][][];
+        for (int row = 0; row < numberOfPoints; row++)
+        {
+            used[row] = new bool[numberOfPoints][];
+            for (int col = 0; col < numberOfPoints; col++)
+            {
+                used[row][col] = new bool[numberOfPoints];
+            }
+        }
+
+        // for (int row = 0; row < numberOfPoints; row++)
+        // {
+        //     for (int col = 0; col < numberOfPoints; col++)
+        //     {
+        //         for (int depth = 0; depth < numberOfPoints; depth++)
+        //         {
+        //             Instantiate(pointTemplate, new Vector3(row * res, col * res, depth * res), Quaternion.identity);
+        //         }
+        //     }
+        // }
+        createdTriangles = new List<GameObject>();
     }
 
     void SetMesh()
@@ -336,11 +368,40 @@ public class ThreeDMusic : MonoBehaviour
         {
             meshFilter.mesh = new Mesh();
         }
-
         var mesh = meshFilter.mesh;
         mesh.Clear(); // Clear existing mesh data
-        mesh.vertices = vertices.ToArray();
-        mesh.triangles = triangles.ToArray();
+        
+        
+        // Assuming 'vertices' and 'triangles' are lists containing the original mesh data
+        List<Vector3> newVertices = new List<Vector3>(vertices);
+        List<int> newTriangles = new List<int>(triangles);
+
+        // Duplicate each triangle with reversed order to flip the normals
+        int numTriangles = triangles.Count;
+        for (int i = 0; i < numTriangles; i += 3)
+        {
+            // Get the original triangle vertices
+            int v1 = triangles[i];
+            int v2 = triangles[i + 1];
+            int v3 = triangles[i + 2];
+
+            // Add vertices to the list (optional, only if you want to separate faces)
+            newVertices.Add(vertices[v1]);
+            newVertices.Add(vertices[v2]);
+            newVertices.Add(vertices[v3]);
+
+            int newV1 = newVertices.Count - 3;
+            int newV2 = newVertices.Count - 2;
+            int newV3 = newVertices.Count - 1;
+
+            // Add the new reversed triangle
+            newTriangles.Add(newV3);
+            newTriangles.Add(newV2);
+            newTriangles.Add(newV1);
+        }
+        
+        mesh.vertices = newVertices.ToArray();
+        mesh.triangles = newTriangles.ToArray();
         mesh.RecalculateNormals();
         //Graphics.DrawMeshInstanced(mesh, 0, material, matrices);
         //Graphics.RenderMeshInstanced(rp, mesh, 0, matrices);
@@ -354,228 +415,7 @@ public class ThreeDMusic : MonoBehaviour
 
     void MarchTheCubes()
     {
-        /*GetSpectrumAudioSource();
-
-        var curMin = float.MaxValue;
-        var curMax = float.MinValue;
-        for (var x = 0; x < numberOfPoints; ++x)
-        {
-            curMin = min(curMin, _samples[x]);
-            curMax = max(curMax, _samples[x]);
-        }
-
-
-        int size = numberOfPoints; // Assume numberOfPoints is defined somewhere
-        var elements = size * size;
-        int[][][] points = new int[size][][];
-        for (int index = 0; index < size; index++)
-        {
-            points[index] = new int[size][];
-            for (int idx = 0; idx < size; idx++)
-            {
-                points[index][idx] = new int[size];
-            }
-        }
-
-        int myRow, myCol;
-        if (size % 2 == 0)
-        {
-            myRow = size / 2 - 1;
-            myCol = size / 2;
-        }
-        else
-        {
-            myRow = myCol = size / 2;
-        }
-
-        int steps = 1;
-        bool increaseSteps = false;
-        int direction = 0;
-        int count = 0;
-
-
-        float curMatVal = _samples[count++];
-        float normalized = ((curMatVal - curMin) / (curMax - curMin));
-        points[myRow][myCol][0] = (normalized >= 0.03f ? 1 : 0);
-
-        while (count < elements)
-        {
-            for (int step = 0; step < steps; step++)
-            {
-                int myCurCol = myCol;
-                int myCurRow = myRow;
-                for (int z = 0; z < numberOfPoints; ++z)
-
-                {
-                    switch (direction)
-                    {
-                        case 0:
-                            myCurCol++;
-                            break; // Move right
-                        case 1:
-                            myCurRow++;
-                            break; // Move down
-                        case 2:
-                            myCurCol--;
-                            break; // Move left
-                        case 3:
-                            myCurRow--;
-                            break; // Move up
-                    }
-
-                    // Check boundaries
-                    if (myCurRow < 0 || myCurRow >= size || myCurCol < 0 || myCurCol >= size) continue;
-
-                    // Place element
-                    curMatVal = _samples[count++];
-                    normalized = ((curMatVal - curMin) / (curMax - curMin));
-                    points[myCurRow][myCurCol][z] = (normalized >= 0.03f ? 1 : 0);
-
-                    if (count >= elements) break;
-                }
-
-                if (count >= elements) break;
-            }
-
-            if (increaseSteps) steps++; // Increase steps every other direction change
-            increaseSteps = !increaseSteps; // Toggle flag every direction
-
-            direction = (direction + 1) % 4; // Cycle through directions
-        }*/
-
-
-        GetSpectrumAudioSource();
-
-        var curMin = float.MaxValue;
-        var curMax = float.MinValue;
-        for (var x = 0; x < numberOfPoints; ++x)
-        {
-            curMin = min(curMin, _samples[x]);
-            curMax = max(curMax, _samples[x]);
-        }
-
-
-        int size = numberOfPoints; // Assume numberOfPoints is defined somewhere
-        var elements = size * size;
-        int[][][] points = new int[size][][];
-        for (int index = 0; index < size; index++)
-        {
-            points[index] = new int[size][];
-            for (int idx = 0; idx < size; idx++)
-            {
-                points[index][idx] = new int[size];
-            }
-        }
-
-        /*var cnt = 0;
-        for (int j = 0; j < numberOfPoints; j++)
-        {
-            for (int i = 0; i < numberOfPoints; i++)
-            {
-                for (int k = 0; k < numberOfPoints; k++)
-                {
-                    var curMatVal = _samples[cnt++];
-                    var normalized = ((curMatVal - curMin) / (curMax - curMin));
-                    points[i][j][k] = (30*normalized >= 0.03f ? 1 : 0);
-                }
-            }
-        }*/
-
-        int myRow, myCol;
-        if (size % 2 == 0)
-        {
-            myRow = size / 2 - 1;
-            myCol = size / 2;
-        }
-        else
-        {
-            myRow = myCol = size / 2;
-        }
-
-        int steps = 1;
-        bool increaseSteps = false;
-        int direction = 0;
-        int count = 0;
-        int totalStepsTakenInCurrentDirection = 0;
-        int changesInDirection = 0;
-
-        while (count < elements)
-        {
-            for (int step = 0; step < steps; step++)
-            {
-                if (myRow < 0 || myRow >= size || myCol < 0 || myCol >= size)
-                {
-                    // If out of bounds, adjust direction and position
-                    direction = (direction + 1) % 4;
-                    changesInDirection++;
-                    if (changesInDirection % 2 == 0 && increaseSteps)
-                    {
-                        steps++;
-                    }
-
-                    increaseSteps = !increaseSteps;
-                    switch (direction)
-                    {
-                        case 0:
-                            myCol++;
-                            break;
-                        case 1:
-                            myRow++;
-                            break;
-                        case 2:
-                            myCol--;
-                            break;
-                        case 3:
-                            myRow--;
-                            break;
-                    }
-
-                    break; // Skip the rest of the loop and adjust direction
-                }
-
-                // Z-cycle: Iterate through the Z dimension for each X,Y position
-                for (int z = 0; z < numberOfPoints; ++z)
-                {
-                    var curMatVal = _samples[count++];
-                    var normalized = ((curMatVal - curMin) / (curMax - curMin));
-                    points[myRow][myCol][z] = (normalized >= 0.3f ? 1 : 0);
-
-                    if (count >= elements) break; // Check if all elements are processed
-                }
-
-                // Move to the next position based on the current direction
-                switch (direction)
-                {
-                    case 0:
-                        myCol++;
-                        break; // Move right
-                    case 1:
-                        myRow++;
-                        break; // Move down
-                    case 2:
-                        myCol--;
-                        break; // Move left
-                    case 3:
-                        myRow--;
-                        break; // Move up
-                }
-
-                if (count >= elements) break; // Exit if all elements are processed
-            }
-
-            direction = (direction + 1) % 4; // Change direction
-            totalStepsTakenInCurrentDirection = 0; // Reset steps in the current direction
-            changesInDirection++;
-            if (changesInDirection % 2 == 0)
-            {
-                increaseSteps = !increaseSteps;
-                if (increaseSteps)
-                {
-                    steps++;
-                }
-            }
-        }
-
+        SetPointValues();
 
         for (int x = 0; x < numberOfPoints - 1; x++)
         {
@@ -596,6 +436,55 @@ public class ThreeDMusic : MonoBehaviour
                     DrawEdges(x * res, y * res, z * res, currentCase);
                 }
             }
+        }
+    }
+
+    void SetPointValues()
+    {
+        var curMin = float.MaxValue;
+        var curMax = float.MinValue;
+        for (var x = 0; x < numberOfPoints; ++x)
+        {
+            curMin = min(curMin, _samples[x]);
+            curMax = max(curMax, _samples[x]);
+        }
+
+        Queue<Vector3Int> queue = new Queue<Vector3Int>();
+        Parallel.For(0, numberOfPoints, x =>
+        {
+            for (int y = 0; y < numberOfPoints; y++)
+            {
+                for (int z = 0; z < numberOfPoints; z++)
+                {
+                    used[x][y][z] = false;
+                }
+            }
+        });
+
+        Vector3Int start = new Vector3Int(numberOfPoints / 2 - 1, numberOfPoints / 2 - 1, numberOfPoints / 2 - 1);
+        queue.Enqueue(start);
+        used[start.x][start.y][start.z] = true;
+        int count = 0;
+        while (queue.Count > 0)
+        {
+            Vector3Int v = queue.Dequeue();
+            foreach (Vector3Int dir in directions)
+            {
+                Vector3Int newPos = v + dir;
+                if (newPos.x < 0 || newPos.x >= numberOfPoints || newPos.y < 0 || newPos.y >= numberOfPoints || newPos.z < 0 ||
+                    newPos.z >= numberOfPoints)
+                    continue;
+                
+                if (!used[newPos.x][newPos.y][newPos.z])
+                {
+                    used[newPos.x][newPos.y][newPos.z] = true;
+                    queue.Enqueue(newPos);
+                }
+            }
+
+            var curMatVal = _samples[count++];
+            var normalized = ((curMatVal - curMin) / (curMax - curMin));
+            points[v.x][v.y][v.z] = sqrt(normalized) >= 0.9f ? 1 : 0;
         }
     }
 
@@ -629,6 +518,12 @@ public class ThreeDMusic : MonoBehaviour
         }
     }
 
+    Vector3 InvertTriangle(Vector3 triangle)
+    {
+        Vector3 newTriangle = new Vector3(triangle.z, triangle.y, triangle.x);
+        return newTriangle;
+    }
+
     // Start is called before the first frame update
     void Start()
     {
@@ -653,13 +548,23 @@ public class ThreeDMusic : MonoBehaviour
         {
             vertices.Clear();
             triangles.Clear();
+            GetSpectrumAudioSource();
             MarchTheCubes();
             SetMesh();
-            //fpsCounter.text = (1.0f / Time.deltaTime).ToString();
+            UpDownTwerkItAllAround();
             yield return new WaitForSeconds(timePerCall);
         }
 
         yield return new WaitForSeconds(timePerCall);
+    }
+
+    void UpDownTwerkItAllAround()
+    {
+        float k = 1000f;
+        // transform.position = new Vector3(sin(Time.fixedTime*5f)*10f, sin(Time.fixedTime*5f)*10f, sin(Time.fixedTime*5f)*10f);
+        // transform.position = new Vector3(transform.position.x, _samples[1] * k, transform.position.z);
+
+        // transform.localScale = new Vector3(sin(Time.fixedTime*5f)*10f, sin(Time.fixedTime*5f)*10f, sin(Time.fixedTime*5f)*10f);
     }
 
     // Update is called once per frame

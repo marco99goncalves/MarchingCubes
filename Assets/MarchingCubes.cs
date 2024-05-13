@@ -9,7 +9,6 @@ using Random = UnityEngine.Random;
 
 public class MarchingCubes : MonoBehaviour
 {
-    FastNoiseLite noises = new FastNoiseLite();
     public float res;
 
     public int size;
@@ -17,9 +16,6 @@ public class MarchingCubes : MonoBehaviour
     public GameObject pointTemplate;
     public Material material;
     private int[] cube;
-
-    public float xInc, yInc, zInc, wInc;
-    private float woff;
 
     public int[,,] points;
 
@@ -320,7 +316,7 @@ public class MarchingCubes : MonoBehaviour
                 {
                     for (int z = 0; z < numberOfPoints; z++)
                     {
-                        //Instantiate(pointTemplate, new Vector3(x * res, y * res, z * res), Quaternion.identity);
+                        Instantiate(pointTemplate, new Vector3(x * res, y * res, z * res), Quaternion.identity);
                     }
                 }
             }
@@ -329,14 +325,44 @@ public class MarchingCubes : MonoBehaviour
     
     void SetMesh()
     {
-        if(_isMeshNull) {
+        if (_isMeshNull)
+        {
             meshFilter.mesh = new Mesh();
         }
-    
         var mesh = meshFilter.mesh;
-        mesh.Clear();  // Clear existing mesh data
-        mesh.vertices = vertices.ToArray();
-        mesh.triangles = triangles.ToArray();
+        mesh.Clear(); // Clear existing mesh data
+        
+        
+        // Assuming 'vertices' and 'triangles' are lists containing the original mesh data
+        List<Vector3> newVertices = new List<Vector3>(vertices);
+        List<int> newTriangles = new List<int>(triangles);
+
+        // Duplicate each triangle with reversed order to flip the normals
+        int numTriangles = triangles.Count;
+        for (int i = 0; i < numTriangles; i += 3)
+        {
+            // Get the original triangle vertices
+            int v1 = triangles[i];
+            int v2 = triangles[i + 1];
+            int v3 = triangles[i + 2];
+
+            // Add vertices to the list (optional, only if you want to separate faces)
+            newVertices.Add(vertices[v1]);
+            newVertices.Add(vertices[v2]);
+            newVertices.Add(vertices[v3]);
+
+            int newV1 = newVertices.Count - 3;
+            int newV2 = newVertices.Count - 2;
+            int newV3 = newVertices.Count - 1;
+
+            // Add the new reversed triangle
+            newTriangles.Add(newV3);
+            newTriangles.Add(newV2);
+            newTriangles.Add(newV1);
+        }
+        
+        mesh.vertices = newVertices.ToArray();
+        mesh.triangles = newTriangles.ToArray();
         mesh.RecalculateNormals();
         //Graphics.DrawMeshInstanced(mesh, 0, material, matrices);
         //Graphics.RenderMeshInstanced(rp, mesh, 0, matrices);
@@ -345,26 +371,6 @@ public class MarchingCubes : MonoBehaviour
 
     void MarchTheCubes()
     {
-        Parallel.For(0, numberOfPoints, x =>
-        {
-            for (int y = 0; y < numberOfPoints; y++)
-            {
-                for (int z = 0; z < numberOfPoints; z++)
-                {
-                    // UnityEngine.Profiling.Profiler.BeginSample("Noise Creation");
-                    float val = noise.snoise(new float4(x*xInc, y*yInc, z*zInc, woff));
-                    //float val = noises.GetNoise(x*xInc, y*yInc, z*zInc+woff);
-                    // UnityEngine.Profiling.Profiler.EndSample();
-                    points[x, y, z] = val * Mathf.Cos(woff) > 0.2f * Mathf.Sin(woff) ? 1 : 0;
-                    //points[x, y, z] = val > 0.5f ? 1 : 0;
-                }
-            }
-        });
-        
-        woff += wInc;
-        
-        // int[] cube = new int[8]; // moved this to be global
-
         for (int x = 0; x < numberOfPoints - 1; x++)
         {
             for (int y = 0; y < numberOfPoints - 1; y++)
@@ -423,11 +429,7 @@ public class MarchingCubes : MonoBehaviour
         cube = new int[8];
         meshFilter = GetComponent<MeshFilter>();
         _isMeshNull = meshFilter.mesh == null;
-        matrix = Matrix4x4.TRS(Vector3.zero, Quaternion.identity, Vector3.one);
-        matrices = new Matrix4x4[1] { matrix };
         rp = new RenderParams(material);
-        
-        noises.SetNoiseType(FastNoiseLite.NoiseType.OpenSimplex2);
         
         InitializePoints();
         StartCoroutine(DoEverythingEverywhereAllAtOnce());
@@ -440,7 +442,7 @@ public class MarchingCubes : MonoBehaviour
             triangles.Clear();
             MarchTheCubes();
             SetMesh();
-            fpsCounter.text = (1.0f / Time.deltaTime).ToString();
+            // fpsCounter.text = (1.0f / Time.deltaTime).ToString();
             yield return new WaitForSeconds(timePerCall);
         }
 

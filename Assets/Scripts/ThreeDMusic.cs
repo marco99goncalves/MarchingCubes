@@ -11,7 +11,13 @@ using Random = System.Random;
 
 [RequireComponent(typeof(AudioSource))]
 public class ThreeDMusic : MonoBehaviour
-{
+{   
+    public GameObject sampleCubePrefab;
+    private GameObject[] sampleCubes;
+    public float maxScale;
+    
+    
+    
     FastNoiseLite noises = new FastNoiseLite();
     public float res;
 
@@ -527,6 +533,9 @@ public class ThreeDMusic : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        
+        
+        /* Initializing the cube */
         cube = new int[8];
         meshFilter = GetComponent<MeshFilter>();
         _isMeshNull = meshFilter.mesh == null;
@@ -540,6 +549,19 @@ public class ThreeDMusic : MonoBehaviour
         _samples = new float[numberOfPoints * numberOfPoints * numberOfPoints];
         _audioSource = GetComponent<AudioSource>();
         StartCoroutine(DoEverythingEverywhereAllAtOnce());
+        
+        /* Initializing the ring */
+        sampleCubes = new GameObject[350];
+        for (int i = 0; i < sampleCubes.Length; ++i) 
+        {
+            GameObject sampleCube = (GameObject)Instantiate(sampleCubePrefab);
+            sampleCube.transform.position = this.transform.position;
+            sampleCube.transform.parent = this.transform;
+            sampleCube.name = "RingCube" + i;
+            this.transform.eulerAngles = new Vector3(10, -(360f/sampleCubes.Length) * i, 0);
+            sampleCube.transform.position = Vector3.forward * 40;
+            sampleCubes[i] = sampleCube;
+        }
     }
 
     private IEnumerator DoEverythingEverywhereAllAtOnce()
@@ -568,8 +590,53 @@ public class ThreeDMusic : MonoBehaviour
     }
 
     // Update is called once per frame
+    /*void Update()
+    {
+        timePerCall = (1000.0f / SimulationFPS) / 1000.0f;
+        
+        /* Updating the ring #1#
+        if (_samples != null)
+        {
+            for (int i = 0; i < _samples.Length; ++i)
+            {
+                if (_samples != null)
+                {
+                    sampleCubes[i].transform.localScale = new Vector3(1, (_samples[i] * maxScale) + 5, 1);
+
+                }
+            }
+        }
+    }*/
+    
+    
     void Update()
     {
         timePerCall = (1000.0f / SimulationFPS) / 1000.0f;
+    
+        /* Updating the ring */
+        if (_samples != null)
+        {
+            for (int i = 0; i < sampleCubes.Length; ++i)
+            {
+                if (_samples != null)
+                {
+                    // Update the scale of the sample cube
+                    sampleCubes[i].transform.localScale = new Vector3(1, min(80, (_samples[i] * maxScale) + 1), ((_samples[i] * 5)) + 1);
+
+                    // Get the Light component attached to the sample cube
+                    Light cubeLight = sampleCubes[i].GetComponent<Light>();
+
+                    // Check if the Light component exists
+                    if (cubeLight != null)
+                    {
+                        // Update the intensity of the light
+                        cubeLight.intensity = (_samples[i] * maxScale); // maxIntensity should be defined according to your needs
+                        
+                        // Make the light always point to the center (0, 0, 0)
+                        cubeLight.transform.LookAt(Vector3.zero);
+                    }
+                }
+            }
+        }
     }
 }

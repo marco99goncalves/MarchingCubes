@@ -10,7 +10,7 @@ using UnityEngine;
 using Random = System.Random;
 
 [RequireComponent(typeof(AudioSource))]
-public class ThreeDMusic : MonoBehaviour
+public class Un1Script : MonoBehaviour
 {   
     public GameObject sampleCubePrefab;
     private GameObject[] sampleCubes;
@@ -410,7 +410,7 @@ public class ThreeDMusic : MonoBehaviour
         mesh.vertices = newVertices.ToArray();
         mesh.triangles = newTriangles.ToArray();
         mesh.RecalculateNormals();
-        Graphics.DrawMeshInstanced(mesh, 0, material, matrices);
+        //Graphics.DrawMeshInstanced(mesh, 0, material, matrices);
         //Graphics.RenderMeshInstanced(rp, mesh, 0, matrices);
     }
 
@@ -457,6 +457,16 @@ public class ThreeDMusic : MonoBehaviour
         }
 
         Queue<Vector3Int> queue = new Queue<Vector3Int>();
+        // for (int x = 0; x < numberOfPoints; x++)
+        // {
+        //     for (int y = 0; y < numberOfPoints; y++)
+        //     {
+        //         for (int z = 0; z < numberOfPoints; z++)
+        //         {
+        //             used[x][y][z] = false;
+        //         }
+        //     }
+        // }
         Parallel.For(0, numberOfPoints, x =>
         {
             for (int y = 0; y < numberOfPoints; y++)
@@ -634,6 +644,19 @@ public class ThreeDMusic : MonoBehaviour
                 {
                     // Update the scale of the sample cube
                     sampleCubes[i].transform.localScale = new Vector3(1, min(80, (_samples[i] * maxScale) + 1), ((_samples[i] * 5)) + 1);
+
+                    // Get the Light component attached to the sample cube
+                    Light cubeLight = sampleCubes[i].GetComponent<Light>();
+
+                    // Check if the Light component exists
+                    if (cubeLight != null)
+                    {
+                        // Update the intensity of the light
+                        cubeLight.intensity = (_samples[i] * maxScale); // maxIntensity should be defined according to your needs
+                        
+                        // Make the light always point to the center (0, 0, 0)
+                        cubeLight.transform.LookAt(Vector3.zero);
+                    }
                 }
             }
         }

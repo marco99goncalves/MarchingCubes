@@ -509,6 +509,7 @@ GameObject:
   - component: {fileID: 1801638153}
   - component: {fileID: 1801638156}
   - component: {fileID: 1801638155}
+  - component: {fileID: 1801638157}
   m_Layer: 0
   m_Name: MarchingCubesController
   m_TagString: Untagged
@@ -588,7 +589,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1801638150}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 8afb91c4f13234c808e20be8e615e256, type: 3}
   m_Name: 
@@ -708,6 +709,37 @@ AudioSource:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
+--- !u!114 &1801638157
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1801638150}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fb80941df4aa39c4da33881daef66ac2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  sampleCubePrefab: {fileID: 412346641517165304, guid: aabda84b2f977420d8f259e8d95b70cb, type: 3}
+  maxScale: 1000
+  res: 1
+  size: 16
+  numberOfPoints: 0
+  pointTemplate: {fileID: 303302428158133671, guid: 5741868e325cfc74ea87451f6df828e4, type: 3}
+  material: {fileID: 2100000, guid: a38c17faf2fa53c46a6b8e0d6040175e, type: 2}
+  wallMaterial: {fileID: 2100000, guid: a095212af50cedc4eabf1ee95ed5de3d, type: 2}
+  _samples: []
+  xInc: 0
+  yInc: 0
+  zInc: 0
+  wInc: 0
+  vertices: []
+  fpsCounter: {fileID: 0}
+  createdTriangles: []
+  runSimulation: 1
+  showPoints: 0
+  SimulationFPS: 30
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0

@@ -534,8 +534,9 @@ public class ThreeDMusic : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        
-        
+        Application.targetFrameRate = 1000;
+        QualitySettings.vSyncCount = 0; // Disable V-Sync
+
         /* Initializing the cube */
         cube = new int[8];
         meshFilter = GetComponent<MeshFilter>();
@@ -621,10 +622,34 @@ public class ThreeDMusic : MonoBehaviour
     }*/
     
     
+    int m_frameCounter = 0;
+    float m_timeCounter = 0.0f;
+    float m_lastFramerate = 0.0f;
+    public float m_refreshTime = 0.5f;
+    public bool hidden = true;
     void Update()
     {
         timePerCall = (1000.0f / SimulationFPS) / 1000.0f;
-    
+        
+        if( m_timeCounter < m_refreshTime )
+        {
+            m_timeCounter += Time.deltaTime;
+            m_frameCounter++;
+        }
+        else
+        {
+            //This code will break if you set your m_refreshTime to 0, which makes no sense.
+            m_lastFramerate = (float)m_frameCounter/m_timeCounter;
+            m_frameCounter = 0;
+            m_timeCounter = 0.0f;
+        }
+        
+        float fps = m_lastFramerate;
+        if (hidden)
+            fpsCounter.text = "";
+        else
+            fpsCounter.text = Math.Round(fps).ToString();
+            
         /* Updating the ring */
         if (_samples != null)
         {
@@ -637,5 +662,11 @@ public class ThreeDMusic : MonoBehaviour
                 }
             }
         }
+
+        // Toggle fps counter when key F is pressed
+        if (Input.GetKeyDown(KeyCode.F))
+            hidden = !hidden;
+        
+        
     }
 }

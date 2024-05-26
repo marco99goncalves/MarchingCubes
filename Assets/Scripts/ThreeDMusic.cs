@@ -489,9 +489,9 @@ public class ThreeDMusic : MonoBehaviour
                 }
             }
 
-            var curMatVal = _samples[count++];
+            var curMatVal = _samples[(count++)%350 + 256];
             var normalized = ((curMatVal - curMin) / (curMax - curMin));
-            points[v.x][v.y][v.z] = sqrt(normalized) >= 0.9f ? 1 : 0;
+            points[v.x][v.y][v.z] = sqrt(normalized) >= 0.5f ? 1 : 0;
         }
     }
 
